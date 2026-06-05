@@ -25,13 +25,11 @@ public class OrdemServico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "ordem_id", nullable = false)
-    private Ordem ordem;
+    @Column(name = "ordem_id", nullable = false)
+    private Long ordemId;
 
-    @ManyToOne
-    @JoinColumn(name = "servico_id", nullable = false)
-    private Servico servico;
+    @Column(name = "servico_id", nullable = false)
+    private Long servicoId;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valor;

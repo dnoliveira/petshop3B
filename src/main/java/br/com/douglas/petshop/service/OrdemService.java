@@ -5,12 +5,12 @@ import br.com.douglas.petshop.model.OrdemServico;
 import br.com.douglas.petshop.model.Servico;
 import br.com.douglas.petshop.repository.OrdemRepository;
 import br.com.douglas.petshop.repository.OrdemServicoRepository;
+import br.com.douglas.petshop.repository.PetRepository;
 import br.com.douglas.petshop.repository.ServicoRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
@@ -31,12 +31,26 @@ public class OrdemService {
 
     private final ServicoRepository servicoRepository;
 
+    private final PetRepository petRepository;
+
     public Ordem findOne(Long id) {
         log.debug("Request to get Ordem : {}", id);
         Ordem ordem = ordemRepository.findById(id).orElse(null);
         if (ordem == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ordem not found");
         }
+
+        if (ordem.getIdPet() != null) {
+            ordem.setPet(petRepository.findById(ordem.getIdPet()).orElse(null));
+        }
+
+        List<OrdemServico> ordemServicoList = ordemServicoRepository.findByOrdemId(ordem.getId());
+        List<Servico> servicoList = new ArrayList<>();
+        for (OrdemServico ordemServico : ordemServicoList) {
+            servicoRepository.findById(ordemServico.getServicoId()).ifPresent(servicoList::add);
+        }
+        ordem.setServicos(servicoList);
+
         return ordem;
     }
 
@@ -76,8 +90,8 @@ public class OrdemService {
                 servico = servicoOpt.get();
 
                 OrdemServico ordemServico = new OrdemServico();
-                ordemServico.setOrdem(ordem);
-                ordemServico.setServico(servico);
+                ordemServico.setOrdemId(ordem.getId());
+                ordemServico.setServicoId(servico.getId());
                 ordemServico.setValor(servico.getValor());
                 ordemServicoRepository.save(ordemServico);
             }
@@ -116,8 +130,8 @@ public class OrdemService {
                 servico = servicoOpt.get();
 
                 OrdemServico ordemServico = new OrdemServico();
-                ordemServico.setOrdem(ordem);
-                ordemServico.setServico(servico);
+                ordemServico.setOrdemId(ordem.getId());
+                ordemServico.setServicoId(servico.getId());
                 ordemServico.setValor(servico.getValor());
                 ordemServicoRepository.save(ordemServico);
             }
@@ -126,9 +140,4 @@ public class OrdemService {
         return ordem;
     }
 
-    public List<Ordem> saveAll(List<Ordem> ordem) {
-        log.debug("Request to save Ordem : {}", ordem);
-        ordem = ordemRepository.saveAll(ordem);
-        return ordem;
-    }
 }

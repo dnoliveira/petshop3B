@@ -26,31 +26,20 @@ public class Ordem {
 
     private String observacao;
 
-    /*
-     * Utilizar caso o Spring jpa/hibernate
-     * fizer o update na estrutura do banco
-     */
-    @ManyToOne
-    @JoinColumn(name = "id_pet", nullable = false, foreignKey = @ForeignKey(name = "fk_ordemservico_pet"))
+    @Transient
     private Pet pet;
 
-    /*
-     * //Utilizar caso a estrutura do banco for definida
-     * //pelo diagrama no workbench.
-     * 
-     * @Column(name = "id_pet", nullable = false)
-     * private Long idPet;
-     */
+    @Column(name = "id_pet", nullable = false)
+    private Long idPet;
 
-    @ManyToMany
-    @JoinTable(name = "ordem_servico", joinColumns = { @JoinColumn(name = "ordem_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "servico_id") })
+    @Transient
     private List<Servico> servicos = new ArrayList<Servico>();
 
-    public Ordem(LocalDateTime dtOrdem, String observacao, Pet pet, List<Servico> servicos) {
+    public Ordem(LocalDateTime dtOrdem, String observacao, Pet pet, Long idPet, List<Servico> servicos) {
         this.dtOrdem = dtOrdem;
         this.observacao = observacao;
         this.pet = pet;
+        this.idPet = idPet;
         this.servicos = servicos;
     }
 
