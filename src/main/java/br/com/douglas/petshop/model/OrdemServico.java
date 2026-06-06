@@ -12,25 +12,18 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(
-        name = "ordem_servico",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        columnNames = {"ordem_id", "servico_id"}
-                )
-        }
-)
+@Table(name = "ordem_servico")
 public class OrdemServico {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @Column(name = "ordem_id", nullable = false)
-    private Long ordemId;
+        @Column(name = "ordem_id", nullable = false)
+        private Long ordemId;
 
-    @Column(name = "servico_id", nullable = false)
-    private Long servicoId;
+        @Column(name = "servico_id", nullable = false)
+        private Long servicoId;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal valor;
+        @Column(nullable = false, precision = 10, scale = 2)
+        private BigDecimal valor;
 }

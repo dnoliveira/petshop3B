@@ -44,12 +44,21 @@ public class OrdemService {
             ordem.setPet(petRepository.findById(ordem.getIdPet()).orElse(null));
         }
 
-        List<OrdemServico> ordemServicoList = ordemServicoRepository.findByOrdemId(ordem.getId());
-        List<Servico> servicoList = new ArrayList<>();
-        for (OrdemServico ordemServico : ordemServicoList) {
-            servicoRepository.findById(ordemServico.getServicoId()).ifPresent(servicoList::add);
+        List<Servico> servicoList = servicoRepository.findByOrdemId(id);
+        if (servicoList != null) {
+            ordem.setServicos(servicoList);
         }
-        ordem.setServicos(servicoList);
+
+        /*
+         * List<OrdemServico> ordemServicoList =
+         * ordemServicoRepository.findByOrdemId(ordem.getId());
+         * List<Servico> servicoList = new ArrayList<>();
+         * for (OrdemServico ordemServico : ordemServicoList) {
+         * servicoRepository.findById(ordemServico.getServicoId()).ifPresent(servicoList
+         * ::add);
+         * }
+         * ordem.setServicos(servicoList);
+         */
 
         return ordem;
     }
